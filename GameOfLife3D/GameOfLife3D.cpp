@@ -3,8 +3,9 @@
 
 #include "GameOfLife3D.h"
 #include <vector>
+#include <chrono>
 
-#define N 5
+#define N 100
 
 class GameOfLifeApp {
 public:
@@ -111,9 +112,19 @@ private:
 int main() {
 	GameOfLifeApp app;
 
-	app.printState();
-	app.tick();
-	app.printState();
+	uint32_t iterations = 100000;
+	
+	auto start = std::chrono::high_resolution_clock::now();
+	for (size_t i = 0; i < iterations; i++) {
+		app.tick();
+	}
+	auto stop = std::chrono::high_resolution_clock::now();
+
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	float throughput = (float)iterations / duration.count();
+
+	std::cout << duration << " elapsed" << std::endl;
+	std::cout << throughput * 10e6 << " ticks/s" << std::endl;
 
 	return 0;
 }
